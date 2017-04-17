@@ -17,7 +17,8 @@ pStudent(q, nu, delta = 0)
 Numeric value, the CDF evaluated at \code{q}.
 }
 \description{
-Student CDF with integer number of degrees of freedom
+Cumulative distribution function of the noncentrel Student
+distribution with an integer number of degrees of freedom.
 }
 \examples{
 pStudent(2, 3)
