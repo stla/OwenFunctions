@@ -5,22 +5,22 @@
 
 .OwenQ1 <- function(nu, t, delta, R){
   .C("owenQ1export", nu=as.integer(nu), t=as.double(t),
-     delta=as.double(delta), r=as.double(R), result=numeric(1))$result
+     delta=as.double(delta), r=as.double(R), result=numeric(1L))$result
 }
 
 .OwenQ2 <- function(nu, t, delta, R){
   .C("owenQ2export", nu=as.integer(nu), t=as.double(t),
-     delta=as.double(delta), r=as.double(R), result=numeric(1))$result
+     delta=as.double(delta), r=as.double(R), result=numeric(1L))$result
 }
 
 .OwenQ <- function(nu, t, delta, a, b){
-  .C("owenQexport", nu=as.integer(nu), t=as.double(t),
+  .C("owenQexport", nu=as.double(nu), t=as.double(t),
      delta=as.double(delta), a=as.double(a), b=as.double(b),
-     result=numeric(1))$result
+     result=numeric(1L))$result
 }
 
 .OwenT <- function(h, a){
-  .C("owenTexport", h=as.double(h), a=as.double(a), result=numeric(1))$result
+  .C("owenTexport", h=as.double(h), a=as.double(a), result=numeric(1L))$result
 }
 
 #' @title Student CDF with integer number of degrees of freedom
@@ -91,7 +91,8 @@ OwenQ1 <- function(nu, t, delta, R){
 }
 
 #' @title Second Owen Q-function
-#' @description Evaluates the first Owen Q-function (integral from \eqn{R} to \eqn{\infty})
+#' @description Evaluates the first Owen Q-function
+#' (integral from \eqn{R} to \eqn{\infty}).
 #' for an integer value of the degrees of freedom.
 #' @param nu integer greater than \eqn{1}, the number of degrees of freedom
 #' @param t finite number, positive or negative
@@ -116,4 +117,32 @@ OwenQ2 <- function(nu, t, delta, R){
     stop("Parameters must be finite.")
   }
   .OwenQ2(nu=nu, t=t, delta=delta, R=R)
+}
+
+#' @title Owen Q-integral
+#' @description Evaluates the Owen Q-integral from \eqn{a} to \eqn{b} by numerical integration.
+#' @param nu finite positive number, the number of degrees of freedom
+#' @param t finite number, positive or negative
+#' @param delta finite number, positive or negative
+#' @param a finite positive number, the lower bound of the integral
+#' @param b finite positive number, the upper bound of the integral
+#' @useDynLib Owen
+#' @return A number between \eqn{0} and \eqn{1}, the value of the integral
+#' from \eqn{a} to \eqn{b}.
+#' @export
+#' @examples
+#' # OwenQ(nu, t, delta, 0, b) = OwenQ1(nu, t, delta, b) (only for integer nu)
+#' OwenQ(4, 3, 2, 0, 6) - OwenQ1(4, 3, 2, 6)
+#' # failure of OwenQ for high value of nu :
+#' nu=300; t=150; delta=160; a=0; b=100
+#' OwenQ(nu, t, delta, a, b)
+#' OwenQ1(nu, t, delta, b)
+OwenQ <- function(nu, t, delta, a, b){
+  if(a<0 || b<0 || nu<0){
+    stop("a, b and nu must be positive.")
+  }
+  if(is.infinite(nu) || is.infinite(t) || is.infinite(delta) || is.infinite(a) || is.infinite(b)){
+    stop("All parameters must be finite.")
+  }
+  .OwenQ(nu=nu, t=t, delta=delta, a=a, b=b)
 }

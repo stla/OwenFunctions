@@ -7,7 +7,7 @@
 OwenQ2(nu, t, delta, R)
 }
 \arguments{
-\item{nu}{integer greater than \eqn{1}, the number degrees of freedom}
+\item{nu}{integer greater than \eqn{1}, the number of degrees of freedom}
 
 \item{t}{finite number, positive or negative}
 
@@ -20,7 +20,8 @@ A number between \eqn{0} and \eqn{1}, the value of the integral
 from \eqn{R} to \eqn{\infty}.
 }
 \description{
-Evaluates the first Owen Q-function (integral from \eqn{R} to \eqn{\infty})
+Evaluates the first Owen Q-function
+(integral from \eqn{R} to \eqn{\infty}).
 for an integer value of the degrees of freedom.
 }
 \examples{

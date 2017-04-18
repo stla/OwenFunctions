@@ -9,7 +9,7 @@ pStudent(q, nu, delta = 0)
 \arguments{
 \item{q}{quantile}
 
-\item{nu}{integer greater than 1, the number of degrees of freedom}
+\item{nu}{integer greater than \eqn{1}, the number of degrees of freedom}
 
 \item{delta}{noncentrality parameter}
 }

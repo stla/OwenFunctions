@@ -7,7 +7,7 @@
 OwenQ1(nu, t, delta, R)
 }
 \arguments{
-\item{nu}{integer greater than \eqn{1}, the number degrees of freedom}
+\item{nu}{integer greater than \eqn{1}, the number of degrees of freedom}
 
 \item{t}{finite number, positive or negative}
 
