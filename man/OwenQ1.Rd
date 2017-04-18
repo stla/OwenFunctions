@@ -16,7 +16,7 @@ OwenQ1(nu, t, delta, R)
 \item{R}{finite positive number, the upper bound of the integral}
 }
 \value{
-A number between 0 and 1, the value of the integral from \eqn{0} to \eqn{R}.
+A number between \eqn{0} and \eqn{1}, the value of the integral from \eqn{0} to \eqn{R}.
 }
 \description{
 Evaluates the first Owen Q-function (integral from \eqn{0} to \eqn{R})
