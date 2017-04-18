@@ -3,9 +3,9 @@
      delta=as.double(delta), result=numeric(1L))$result
 }
 
-.OwenQ1 <- function(nu, t, delta, r){
+.OwenQ1 <- function(nu, t, delta, R){
   .C("owenQ1export", nu=as.integer(nu), t=as.double(t),
-     delta=as.double(delta), r=as.double(r), result=numeric(1))$result
+     delta=as.double(delta), r=as.double(R), result=numeric(1))$result
 }
 
 .OwenQ2 <- function(nu, t, delta, r){
@@ -33,11 +33,11 @@
 #' @export
 #' @useDynLib Owen
 #' @examples
-#' pStudent(2, 3)
-#' pt(2,3)
+#' pStudent(2, 3) - pt(2, 3)
+#' pStudent(2, 3, delta=1) - pt(2, 3, ncp=1)
 pStudent <- function(q, nu, delta=0){
   if(!isPositiveInteger(nu)){
-    stop("`nu` must be an integer >1")
+    stop("`nu` must be an integer >=1.")
   }
   .pStudent(q=q, nu=nu, delta=delta)
 }
@@ -59,4 +59,33 @@ pStudent <- function(q, nu, delta=0){
 #' OwenT(h,a) - (1-pnorm(abs(h)))/2
 OwenT <- function(h, a){
   .OwenT(h, a)
+}
+
+
+#' @title First Owen Q-function
+#' @description Evaluates the first Owen Q-function (integral from \eqn{0} to \eqn{R})
+#' for an integer value of the degrees of freedom.
+#' @param nu integer greater than \eqn{1}, the number degrees of freedom
+#' @param t finite number, positive or negative
+#' @param delta finite number, positive or negative
+#' @param R finite positive number, the upper bound of the integral
+#' @useDynLib Owen
+#' @return A number between 0 and 1, the value of the integral from \eqn{0} to \eqn{R}.
+#' @export
+#' @examples
+#' OwenQ1(4, 3, 2, 1)
+#' # OwenQ(nu, t, delta, Inf) = pStudent(t, nu, delta)
+#' OwenQ1(4, 3, 2, 100)
+#' pStudent(3, 4, 2)
+OwenQ1 <- function(nu, t, delta, R){
+  if(R<0){
+    stop("R must be positive.")
+  }
+  if(!isPositiveInteger(nu)){
+    stop("`nu` must be an integer >=1.")
+  }
+  if(is.infinite(t) || is.infinite(delta) || is.infinite(R)){
+    stop("Parameters must be finite.")
+  }
+  .OwenQ1(nu=nu, t=t, delta=delta, R=R)
 }

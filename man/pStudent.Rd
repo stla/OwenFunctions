@@ -21,6 +21,6 @@ Cumulative distribution function of the noncentrel Student
 distribution with an integer number of degrees of freedom.
 }
 \examples{
-pStudent(2, 3)
-pt(2,3)
+pStudent(2, 3) - pt(2, 3)
+pStudent(2, 3, delta=1) - pt(2, 3, ncp=1)
 }
