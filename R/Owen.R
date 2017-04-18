@@ -74,7 +74,7 @@ OwenT <- function(h, a){
 #' @export
 #' @examples
 #' OwenQ1(4, 3, 2, 1)
-#' # OwenQ(nu, t, delta, Inf) = pStudent(t, nu, delta)
+#' # OwenQ1(nu, t, delta, Inf) = pStudent(t, nu, delta)
 #' OwenQ1(4, 3, 2, 100)
 #' pStudent(3, 4, 2)
 OwenQ1 <- function(nu, t, delta, R){
