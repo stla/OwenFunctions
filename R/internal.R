@@ -1,3 +1,3 @@
-isPositiveInteger <- function(x){
-  is.numeric(x) && x>0 && (floor(x) == x)
+isNotPositiveInteger <- function(x){
+  !is.numeric(x) || x<1 || (floor(x) != x)
 }

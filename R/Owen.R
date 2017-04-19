@@ -36,7 +36,7 @@
 #' pStudent(2, 3) - pt(2, 3)
 #' pStudent(2, 3, delta=1) - pt(2, 3, ncp=1)
 pStudent <- function(q, nu, delta=0){
-  if(!isPositiveInteger(nu)){
+  if(isNotPositiveInteger(nu)){
     stop("`nu` must be an integer >=1.")
   }
   .pStudent(q=q, nu=nu, delta=delta)
@@ -81,7 +81,7 @@ OwenQ1 <- function(nu, t, delta, R){
   if(R<0){
     stop("R must be positive.")
   }
-  if(!isPositiveInteger(nu)){
+  if(isNotPositiveInteger(nu)){
     stop("`nu` must be an integer >=1.")
   }
   if(is.infinite(t) || is.infinite(delta) || is.infinite(R)){
@@ -110,7 +110,7 @@ OwenQ2 <- function(nu, t, delta, R){
   if(R<0){
     stop("R must be positive.")
   }
-  if(!isPositiveInteger(nu)){
+  if(isNotPositiveInteger(nu)){
     stop("`nu` must be an integer >=1.")
   }
   if(is.infinite(t) || is.infinite(delta) || is.infinite(R)){

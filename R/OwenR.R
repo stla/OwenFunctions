@@ -13,10 +13,26 @@ OwenSequences <- function(n, a=1, b=1, d=1, r=1){
     A[k] <- 1 / (k-1L) / A[k-1L]
     L[k] <- A[k-1L] * r * L[k-1L]
     H[k] <- A[k-2L] * r * H[k-1L]
-    M[k] <- (1-1/(k-3L)) * b * (A[k-4L] * d * a * M[k-1L] + M[k-2L]) - L[k-1L]
+    M[k] <- (k-4L)/(k-3L) * b * (A[k-4L] * d * a * M[k-1L] + M[k-2L]) - L[k-1L]
   }
-  return((H+M)[-c(1L,2L)])
+  return(cbind(H,M)[-c(1L,2L),])
 }
+
+# OwenSequences <- function(n, a=1, b=1, d=1, r=1){
+#   ALHM <- matrix(numeric(4L*(n+2L)), ncol=4L)
+#   ALHM[1L,1L] <- 1
+#   ALHM[2L,1L] <- 1
+#   sB <- sqrt(b)
+#   ALHM[3L,] <- c(0.5, 0, -dnorm(r) * pnorm (a*r-d), a*sB*dnorm(d*sB)*(pnorm(d*a*sB)-pnorm((d*a*b-r)/sB)))
+#   ALHM[4L,] <- c(2/3, a * b * r * dnorm(r) * dnorm(a*r-d) / 2, r * ALHM[3L,3L], b*(d*a*ALHM[3L,4L] + a*dnorm(d*sB)*(dnorm(d*a*sB)-dnorm((d*a*b-r)/sB))))
+#   for(k in 5L:(n+2L)){
+#     previous <- ALHM[k-1L,]
+#     ALHM[k,] <- c(1 / (k-1L) / previous[1L], previous[1L]*r*previous[2L],
+#                   ALHM[k-2L,1L]*r*previous[3L],
+#                   (1-1/(k-3L)) * b * (ALHM[k-4L,1L] * d * a * previous[4L] + ALHM[k-2L,4L]) - previous[2L])
+#   }
+#   return(rowSums(ALHM[-c(1L,2L), c(3L,4L)])) # plus de sommes que nécessaire
+# }
 
 #' @title First Owen Q-function
 #' @description Evaluates the first Owen Q-function (integral from \eqn{0} to \eqn{R})
@@ -35,7 +51,7 @@ OwenQ1_R <- function(nu, t, delta, R){
   if(R<0){
     stop("R must be positive.")
   }
-  if(!isPositiveInteger(nu)){
+  if(isNotPositiveInteger(nu)){
     stop("`nu` must be an integer >=1.")
   }
   if(is.infinite(t) || is.infinite(delta) || is.infinite(R)){
@@ -44,12 +60,13 @@ OwenQ1_R <- function(nu, t, delta, R){
   a <- sqrt(t*t/nu)
   b <- nu/(nu+t*t)
   sB <- sqrt(b)
+  nu <- as.integer(nu)
   if(nu==2L){
     return(pnorm(-delta) + sqrt(2*pi) *
              (-dnorm(R) * pnorm (a*R-delta) +
                 a*sB*dnorm(delta*sB)*(pnorm(delta*a*sB)-pnorm((delta*a*b-R)/sB))))
   }
-  if(nu%%2L==1){
+  if(nu%%2L==1L){
     C <- pnorm(R) - 2*OwenT(R, (a*R-delta)/R) -
       2*OwenT(delta*sB, (delta*a*b-R)/b/delta) + 2*OwenT(delta*sB, a) - (delta>=0)
     if(nu==1L){
@@ -61,11 +78,11 @@ OwenQ1_R <- function(nu, t, delta, R){
                     a*dnorm(delta*sB)*(dnorm(delta*a*sB)-dnorm((delta*a*b-R)/sB))))
     }else{
       return(C +
-               2*sum(OwenSequences(nu-1L, a, b, delta, R)[seq(2L, nu-1L, by=2L)]))
+               2*sum(OwenSequences(nu-1L, a, b, delta, R)[seq(2L, nu-1L, by=2L),]))
     }
   }else{
     return(pnorm(-delta) + sqrt(2*pi) *
-             sum(OwenSequences(nu-1L, a, b, delta, R)[seq(1L, nu-1L, by=2L)]))
+             sum(OwenSequences(nu-1L, a, b, delta, R)[seq(1L, nu-1L, by=2L),]))
   }
 }
 
