@@ -30,7 +30,7 @@ pStudent_R <- function(q, nu, delta=0){
   if(is.infinite(q) || is.infinite(delta)){
     stop("Parameters must be finite.")
   }
-  a <- sqrt(q*q/nu)
+  a <- q/sqrt(nu)
   b <- nu/(nu+q*q)
   nu <- as.integer(nu)
   if(nu==2L){

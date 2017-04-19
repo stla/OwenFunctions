@@ -57,6 +57,13 @@ pStudent <- function(q, nu, delta=0){
 #' OwenT(h,1) - pnorm(h)*(1-pnorm(h))/2
 #' a <- 1000 # a -> Inf
 #' OwenT(h,a) - (1-pnorm(abs(h)))/2
+#' # relation with noncentral t with 1 degree of freedom
+#' delta <- 1; q <- 2
+#' OwenT(delta/sqrt(1+q^2), q)
+#' 1/2*(pt(q, 1, delta) - pnorm(-delta/sqrt(1+q^2)))
+#' h <- 0.5; a <- 2
+#' OwenT(h, a)
+#' 1/2*(pt(a, 1, h*sqrt(1+a^2)) - pnorm(-h))
 OwenT <- function(h, a){
   .OwenT(h, a)
 }
