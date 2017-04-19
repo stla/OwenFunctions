@@ -1,21 +1,75 @@
+# OwenSequences <- function(n, a=1, b=1, d=1, r=1){
+#   # le dernier A ne sert à rien, ce serait mieux d'utiliser A[k] dans la boucle
+#   # le dernier L non plus
+#   A <- L <- H <- M <- numeric(n+2L)
+#   A[1L:2L] <- 1
+#   A[3L] <- 0.5
+#   H[3L] <- -dnorm(r) * pnorm (a*r-d)
+#   sB <- sqrt(b)
+#   M[3L] <- a*sB*dnorm(d*sB)*(pnorm(d*a*sB)-pnorm((d*a*b-r)/sB))
+#   A[4L] <- 2/3
+#   L[4L] <- a * b * r * dnorm(r) * dnorm(a*r-d) / 2
+#   H[4L] <- r * H[3L]
+#   M[4L] <- b*(d*a*M[3L] + a*dnorm(d*sB)*(dnorm(d*a*sB)-dnorm((d*a*b-r)/sB)))
+#   for(k in 5L:(n+2L)){
+#     A[k] <- 1 / (k-1L) / A[k-1L]
+#     L[k] <- A[k-1L] * r * L[k-1L]
+#     H[k] <- A[k-2L] * r * H[k-1L]
+#     M[k] <- (k-4L)/(k-3L) * b * (A[k-4L] * d * a * M[k-1L] + M[k-2L]) - L[k-1L]
+#   }
+#   return(cbind(H,M)[-c(1L,2L),])
+# }
+#
+# OwenSequences <- function(n, a=1, b=1, d=1, r=1){
+#   A <- L <- numeric(n+1L)
+#   H <- M <- numeric(n+2L)
+#   A[1L:2L] <- 1
+#   A[3L] <- 0.5
+#   H[3L] <- -dnorm(r) * pnorm (a*r-d)
+#   sB <- sqrt(b)
+#   M[3L] <- a*sB*dnorm(d*sB)*(pnorm(d*a*sB)-pnorm((d*a*b-r)/sB))
+#   #A[4L] <- 2/3
+#   L[3L] <- a * b * r * dnorm(r) * dnorm(a*r-d) / 2
+#   H[4L] <- r * H[3L]
+#   M[4L] <- b*(d*a*M[3L] + a*dnorm(d*sB)*(dnorm(d*a*sB)-dnorm((d*a*b-r)/sB)))
+#   for(k in 5L:(n+1)){
+#     aa <- A[k-1L] <- 1 / (k-2L) / A[k-2L]
+#     L[k-1L] <- aa * r * L[k-2L]
+#     H[k] <- A[k-2L] * r * H[k-1L]
+#     M[k] <- (k-4L)/(k-3L) * b * (A[k-4L] * d * a * M[k-1L] + M[k-2L]) - L[k-2L]
+#   }
+#   H[n+2L] <- aa * r * H[n+1L]
+#   M[n+2L] <- (n-2L)/(n-1L) * b * (A[n-2L] * d * a * M[n+1L] + M[n]) - L[n]
+#   return(cbind(H,M)[-c(1L,2L),])
+# } # peut-être mieux de faire deux boucles, une pour A et L, une pour H et M
+
 OwenSequences <- function(n, a=1, b=1, d=1, r=1){
-  A <- L <- H <- M <- numeric(n+2L)
-  A[1L:2L] <- 1
-  A[3L] <- 0.5
-  H[3L] <- -dnorm(r) * pnorm (a*r-d)
+  H <- M <- numeric(n)
+  H[1L] <- -dnorm(r) * pnorm (a*r-d)
   sB <- sqrt(b)
-  M[3L] <- a*sB*dnorm(d*sB)*(pnorm(d*a*sB)-pnorm((d*a*b-r)/sB))
-  A[4L] <- 2/3
-  L[4L] <- a * b * r * dnorm(r) * dnorm(a*r-d) / 2
-  H[4L] <- r * H[3L]
-  M[4L] <- b*(d*a*M[3L] + a*dnorm(d*sB)*(dnorm(d*a*sB)-dnorm((d*a*b-r)/sB)))
-  for(k in 5L:(n+2L)){
-    A[k] <- 1 / (k-1L) / A[k-1L]
-    L[k] <- A[k-1L] * r * L[k-1L]
-    H[k] <- A[k-2L] * r * H[k-1L]
-    M[k] <- (k-4L)/(k-3L) * b * (A[k-4L] * d * a * M[k-1L] + M[k-2L]) - L[k-1L]
+  M[1L] <- a*sB*dnorm(d*sB)*(pnorm(d*a*sB)-pnorm((d*a*b-r)/sB))
+  # if n>1
+  H[2L] <- r * H[1L]
+  M[2L] <- b*(d*a*M[1L] + a*dnorm(d*sB)*(dnorm(d*a*sB)-dnorm((d*a*b-r)/sB)))
+  if(n>2){
+    A <- numeric(n)
+    L <- numeric(n-2L)
+    A[1L:2L] <- 1
+    L[1L] <- a * b * r * dnorm(r) * dnorm(a*r-d) / 2
+    for(k in 3L:n){
+      A[k] <- 1/(k-1L)/A[k-1L]
+    }
+    if(n>3){
+      for(k in 2L:(n-2L)){
+        L[k] <- A[k+2L] * r * L[k-1L]
+      }
+    }
+    for(k in 3L:n){
+      H[k] <- A[k] * r * H[k-1L]
+      M[k] <- (k-2L)/(k-1L) * b * (A[k-2L] * d * a * M[k-1L] + M[k-2L]) - L[k-2L]
+    }
   }
-  return(cbind(H,M)[-c(1L,2L),])
+  return(cbind(H,M))
 }
 
 # OwenSequences <- function(n, a=1, b=1, d=1, r=1){
@@ -71,11 +125,11 @@ OwenQ1_R <- function(nu, t, delta, R){
       2*OwenT(delta*sB, (delta*a*b-R)/b/delta) + 2*OwenT(delta*sB, a) - (delta>=0)
     if(nu==1L){
       return(C)
-    }else if (nu==3L){
-      C + 2*(R*(-dnorm(R) * pnorm (a*R-delta)) +
-               b*(delta*a*a*sB*dnorm(delta*sB) *
-                    (pnorm(delta*a*sB)-pnorm((delta*a*b-R)/sB)) +
-                    a*dnorm(delta*sB)*(dnorm(delta*a*sB)-dnorm((delta*a*b-R)/sB))))
+    # }else if (nu==3L){
+    #   C + 2*(R*(-dnorm(R) * pnorm (a*R-delta)) +
+    #            b*(delta*a*a*sB*dnorm(delta*sB) *
+    #                 (pnorm(delta*a*sB)-pnorm((delta*a*b-R)/sB)) +
+    #                 a*dnorm(delta*sB)*(dnorm(delta*a*sB)-dnorm((delta*a*b-R)/sB))))
     }else{
       return(C +
                2*sum(OwenSequences(nu-1L, a, b, delta, R)[seq(2L, nu-1L, by=2L),]))
