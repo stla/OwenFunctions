@@ -211,3 +211,53 @@ OwenQ1_R2 <- function(nu, t, delta, R){
     return(pnorm(-delta) + sqrt(2*pi) * sum(H[indices]+M[indices]))
   }
 }
+
+#' @title Third R implementation
+#' @export
+OwenQ1_R3 <- function(nu, t, delta, R){
+  if(R<0)
+    stop("R must be positive.")
+  if(isNotPositiveInteger(nu))
+    stop("`nu` must be an integer >=1.")
+  if(is.infinite(t) || is.infinite(delta) || is.infinite(R))
+    stop("Parameters must be finite.")
+  a <- t/sqrt(nu)
+  b <- nu/(nu+t*t)
+  sB <- sqrt(b)
+  if(nu==1)
+    return(pnorm(R) - 2*OwenT(R, (a*R-delta)/R) -
+             2*OwenT(delta*sB, (delta*a*b-R)/b/delta) + 2*OwenT(delta*sB, a) -
+             (delta>=0))
+  nu <- as.integer(nu)
+  n <- nu-1L
+  H <- M <- numeric(n)
+  H[1L] <- -dnorm(R) * pnorm (a*R-delta)
+  M[1L] <- a*sB*dnorm(delta*sB)*(pnorm(delta*a*sB)-pnorm((delta*a*b-R)/sB))
+  if(nu>=3L){
+    H[2L] <- R * H[1L]
+    M[2L] <- b*(delta*a*M[1L] + a*dnorm(delta*sB)*(dnorm(delta*a*sB)-dnorm((delta*a*b-R)/sB)))
+    if(nu>=4L){
+      A <- numeric(n)
+      L <- numeric(n-2L)
+      A[1L:2L] <- 1
+      L[1L] <- a * b * R * dnorm(R) * dnorm(a*R-delta) / 2
+      for(k in 3L:n) A[k] <- 1/((k-1L)*A[k-1L])
+      if(nu>=5L)
+        for(k in 2L:(n-2L)) L[k] <- A[k+2L] * R * L[k-1L]
+      for(k in 3L:n){
+        H[k] <- A[k] * R * H[k-1L]
+        M[k] <- (k-2L)/(k-1L) * b * (A[k-2L] * delta * a * M[k-1L] + M[k-2L]) - L[k-2L]
+      }
+    }
+  }
+  if(nu%%2L==1L){
+    C <- pnorm(R) - 2*OwenT(R, (a*R-delta)/R) -
+      2*OwenT(delta*sB, (delta*a*b-R)/b/delta) + 2*OwenT(delta*sB, a) -
+      (delta>=0)
+    indices <- seq(2L, n, by=2L)
+    return(C + 2*(sum(H[indices])+sum(M[indices])))
+  }else{
+    indices <- seq(1L, n, by=2L)
+    return(pnorm(-delta) + sqrt(2*pi) * (sum(H[indices])+sum(M[indices])))
+  }
+}
