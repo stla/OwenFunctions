@@ -18,9 +18,9 @@ microbenchmark(
 
 # for even values (no OwenT)
 microbenchmark(
-  R = OwenQ1_R(nu=100L, t=runif(1, 1, 10), delta=runif(1, -100, 100), R=rgamma(1,100,1)),
+  R = OwenQ1_R2(nu=100L, t=runif(1, 1, 10), delta=runif(1, -100, 100), R=rgamma(1,100,1)),
   PowerTOST = PowerTOST::OwensQOwen(nu=100L, t=runif(1, 1, 10), delta=runif(1, -100, 100), b=rgamma(1,100,1)),
-  times = 1000
+  times = 500
 )
 
 microbenchmark(

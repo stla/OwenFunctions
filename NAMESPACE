@@ -3,6 +3,7 @@
 export(OwenQ)
 export(OwenQ1)
 export(OwenQ1_R)
+export(OwenQ1_R2)
 export(OwenQ2)
 export(OwenT)
 export(pStudent)
